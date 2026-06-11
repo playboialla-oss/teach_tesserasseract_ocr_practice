@@ -1,0 +1,75 @@
+version: "3.8"
+
+services:
+  ocr_app:
+    build:
+    # Контекст сборки – корень проекта (root)
+      context: ../../
+      dockerfile: docker/astralinux/Dockerfile
+      #image: delagreenpromo/astralinux_ocr_app:latest
+      #image: astralinux_ocr_app:latest
+    container_name: astralinux_ocr_app
+    mem_limit: 2g
+    user: "${UID}:${GID}"
+    # (опционально) устанавливаем рабочую директорию внутри контейнера
+    working_dir: /app
+    env_file:
+      - ../../.env
+    environment:
+      #- UID=${UID}
+      #- GID=${GID}
+      #API
+      - API_BASE_URL=http://127.0.0.1:8000
+      - API_AUTHENTICATE_ENDPOINT=/core/api/Auth/authenticate
+      - API_GET_OBJECTS_ID=/core/api/objects/select
+      - API_GET_BLOB_ID=/core/api/files/objects/{obj_id}
+      - API_DOWNLOAD_ENDPOINT=/core/api/files/objects/{obj_id}/files/{blob_id}
+      - API_SEND_CONTENT=/core/api/objects/{obj_id}/attributes
+      - API_USERNAME=your_username
+      - API_PASSWORD=your_password
+      - API_POLLING_INTERVAL=60
+      #PATH
+      - PATH_RESULTS_DIR=./results
+      #Processing
+      #Расширение файлов, через запятую
+      - PROCESSING_EXTENSIONS=.dwg.pdf
+      #Включает отправку текста в IPS
+      - PROCESSING_IS_PRODUCTION=true
+      #Сохраняет изображения в папку /results
+      - PROCESSING_SAVE_IMAGES=true
+      - PROCESSING_DEBUG=true
+      #OCR
+      - OCR_DPI=300
+        #Язык распознавания
+      - OCR_LANG=rus
+        #ОЕМ модификатор
+      - OCR_PSM=6
+        #Хз что такое
+      - OCR_USE_ADVANCED_RECOGNITION=true
+      - OCR_MIN_AREA_RATIO=0.005
+      - OCR_WIDTH_TOLERANCE=0.3
+        #---Настройки захвата облака текста---
+      - OCR_KERNEL_WIDTH=20
+      - OCR_KERNEL_HEIGHT=30
+        #-------------------------------------
+      - OCR_DILATION_ITERATIONS=3
+      #- OCR_CHAR_WHITELIST = 
+      #Selection
+      #- OCR_KEYWORDS =
+      #Exclusion
+      #- OCR_EXCLUDE_KEYWORDS =
+    volumes:
+      # Файл конфигурации, доступный только для чтения
+      - type: bind
+        source: ../../config.ini
+        target: /app/config.ini
+        read_only: true
+        consistency: consistent
+      - type: bind
+        source: ../../results
+        target: /app/results
+      # Монтирование настроек времени
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    network_mode: host
+    restart: unless-stopped

@@ -1,0 +1,8 @@
+name: IPS
+variables:
+  - name: AUTH_TOKEN
+    value: ""
+  - name: OBJ_ID
+    value: "101"
+  - name: BLOB_ID
+    value: ""

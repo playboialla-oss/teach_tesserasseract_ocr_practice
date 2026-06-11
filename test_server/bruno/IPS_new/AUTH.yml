@@ -1,0 +1,32 @@
+info:
+  name: AUTH
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:8000/core/api/Auth/authenticate
+  body:
+    type: json
+    data: |-
+      {
+        "loginName": "user",
+        "password": "password",
+        "passwordType": "plainText",
+        "roleID": 0,
+        "accessLevelID": 0
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        const data = res.getBody();
+        bru.setEnvVar("AUTH_TOKEN", data.accessToken);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

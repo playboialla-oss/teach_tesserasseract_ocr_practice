@@ -1,0 +1,35 @@
+info:
+  name: GET_Obj
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: http://localhost:8000/core/api/objects/select
+  headers:
+    - name: Authorization
+      value: Bearer {{AUTH_TOKEN}}
+  body:
+    type: json
+    data: |
+      {
+          "objectTypeId": -1,
+          "attributeIdsToSelect": [-2],
+          "conditions": [
+              {
+                  "attributeId": 30357,
+                  "relationalOperator": "Equal",
+                  "logicalOperator": "none",
+                  "groupID": 0,
+                  "value": "false",
+                  "content": "text"
+              }
+          ]
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

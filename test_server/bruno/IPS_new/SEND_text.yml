@@ -1,0 +1,36 @@
+info:
+  name: SEND_text
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: http://localhost:8000/core/api/objects/{{OBJ_ID}}/attributes
+  headers:
+    - name: Authorization
+      value: Bearer {{AUTH_TOKEN}}
+  body:
+    type: json
+    data: |-
+      [
+          { 
+              "attributeID": 30357,
+              "values": [
+                  "true"
+              ]
+          },
+          {
+              "attributeID": 30356,
+              "values": [
+                "суда писать распознанный текст", 
+                "а так реализован перенос как новый элемент массива"
+              ]
+          }    
+      ]
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
