@@ -36,3 +36,7 @@ experiments/check_pdf_v5.py
 experiments/probe_kompas_textlayer.py
 experiments/check_pdf_kompas_textlayer_fix.py
 experiments/check_pdf_kompas_textlayer_fix2.py
+*.PDF
+*.DWG
+*.cdw
+*.CDW
