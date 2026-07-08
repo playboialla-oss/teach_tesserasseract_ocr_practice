@@ -1,90 +1,37 @@
-# Клонирование репозитория 
-Что бы клонировать репозиторий с сылками на чужой репозиторий необходимо выполнить команду 
+# OCR на PDF-чертежах
 
-    git clone --recurse-submodules https://github.com/DELAGREEN/teach_tesserasseract.git
+Практическая работа по OCR на инженерных PDF-чертежах.
 
-# Сборка репозитория
-Первым этапом является добавления сторонних репозиториев в свой проект с помощью команды  
+Цель проекта — найти на PDF-чертежах блок технических требований / текстовых примечаний, распознать текст и сохранить координаты найденной области.
 
-Добавляем tesstrain:
+## Основной скрипт
 
-    git submodule add https://github.com/tesseract-ocr/tesstrain.git
+Текущая экспериментальная версия:
 
-# Чел на Youtube 
-    https://www.youtube.com/watch?v=KE4xEzFGSU8&ab_channel=GabrielGarcia
+`experiments/check_pdf_v5_post.py`
 
-# Обучение
+Подробное описание экспериментов:
 
-    cd sub_modules/tesstrain/
+`experiments/README_ocr_experiments.md`
 
-<br>
+## Что делает программа
 
-    TESSDATA_PREFIX=../tesseract/tessdata make training MODEL_NAME=rus START_MODEL=rus TESSDATA=../tesseract/tessdata MAX_ITERATIONS=10000
+Программа выполняет пайплайн:
 
-<br>
+PDF → изображение → OCR → текстовые кандидаты → оценка кандидатов → выбранный блок → JSON/debug
 
-    mkdir langdata
+На выходе создаются:
 
-<br>
+- `output.json` с координатами и распознанным текстом;
+- `debug_selected/` с выбранными блоками;
+- `debug_all_candidates/` со всеми кандидатами;
+- `debug_rejected/` с отклонёнными областями.
 
-    cd langdata
+## Установка на Ubuntu
 
-<br>
+Системные зависимости:
 
-    git clone https://github.com/tesseract-ocr/langdata_lstm.git/
-
-<br>
-
-    make unicharset lists proto-model tesseract-langdata training MODEL_NAME=rus MAX_ITERATIONS=100000
-
-Распаковать файлы из папки языка в root-langdata
-
-# Переменные окружения 
-    services:
-    app:
-        build: .
-        environment:
-        - LOG_LEVEL=DEBUG
-        - LOG_FILE=/logs/app.log
-
-# Сборка Docker контейнера
-<br> 
-
-**ВНИМАНИЕ**
-<br>
-**Бывает так что проект собирается не с первого раза, нужно просто запустить сборку повторно.**
-- Что бы собрать проект нужно запустить `docker-compose` с файлом `docker-compose.yml` проект сам соберется
-- В файле .env нужно указать путь монтирования к хост машине
-- **Если хотите взаимодействовать с файлами в хостмашине от обычного пользователя, раскоментируйте строки `UID` и `GID`в .env файле.
-
-<br>
-
-# Пересборка
-## Останавливаем и удаляем все контейнеры
-    docker-compose down --rmi all --volumes --remove-orphans
-
-## Удаляем все Docker образы, контейнеры и volumes
-    docker system prune -a -f
-<br>
-
-    docker volume prune -f
-
-## Пересобираем образ с чистого листа
-    docker-compose build --no-cache
-
-## Запускаем
-    docker-compose up -d
-
-# Пример как зайти в контейнер под root
-    docker-compose run --rm --user root container_name /bin/bash
-<br>
-
-    docker exec -it -u root container_name /bin/bash
-
-
-# Tesseract
-
-### Место нахождение файла .trainedata
-После переобучения закинуть сюда
-
-    /usr/share/tesseract-ocr/5/tessdata
+```bash
+sudo apt update
+sudo apt install -y tesseract-ocr tesseract-ocr-rus poppler-utils python3-venv
+sudo apt install -y libgl1 libglib2.0-0
