@@ -14,3 +14,20 @@ test_server/pdf_storage/*
 !pdf/processed/
 !pdf/results/
 !pdf/tresh/
+# Local drawings and OCR outputs
+*.pdf
+*.dwg
+*.dwg.pdf
+test_server/mock_files/
+results/
+ocr_debug/
+experiments/rendered/
+experiments/out/
+
+# Local OCR experiment drafts
+experiments/check_pdf.py
+experiments/check_pdf_v4.py
+experiments/check_pdf_v4_1.py
+experiments/check_pdf_v4_2.py
+experiments/check_pdf_v4_2_fix.py
+experiments/check_pdf_v5.py
